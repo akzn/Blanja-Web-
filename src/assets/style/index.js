@@ -1,5 +1,5 @@
 // Logo blanja
-import Logo from '../img/Vector.png'
+import Logo from '../img/logo-social.jpg'
 
 // Image Trends In 2020
 import Image1 from '../img/1.jfif'

@@ -16,7 +16,8 @@ export default class NavbarNav extends Component {
             <div className="brand d-lg-none">
               <Navbar.Brand href="#home">
                 <img
-                  src="https://res.cloudinary.com/devloops7/image/upload/v1606499947/newBlanja/VectorlogoKecil_ijoj9p.png"
+                  // src="https://res.cloudinary.com/devloops7/image/upload/v1606499947/newBlanja/VectorlogoKecil_ijoj9p.png"
+                  src="assets/img/ava.png"
                   width="30"
                   height="44"
                   className="d-inline-block align-top nav-logo"
@@ -27,7 +28,8 @@ export default class NavbarNav extends Component {
             <div className="brand2">
               <Navbar.Brand href="#home">
                 <img
-                  src="https://res.cloudinary.com/devloops7/image/upload/v1606499947/newBlanja/VectorlogoBesar_vobugk.png"
+                  // src="https://res.cloudinary.com/devloops7/image/upload/v1606499947/newBlanja/VectorlogoBesar_vobugk.png"
+                  src="assets/img/ava.png"
                   width="30"
                   height="44"
                   className="d-inline-block align-top nav-logo"
