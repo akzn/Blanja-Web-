@@ -6,6 +6,7 @@ import { authRegisterCreator } from "../../redux/actions/auth";
 import { Logo } from "../../assets/style/index";
 import { useHistory } from "react-router-dom";
 import "../../assets/style/login.css";
+import { BrandSmall } from "../Brand";
 
 const Register = ({ changeToLogin }) => {
   const dispatch = useDispatch();
@@ -60,12 +61,7 @@ const Register = ({ changeToLogin }) => {
     <>
       <section className="home-page">
         <div id="logo">
-          <div className="logo-shop">
-            <img src={Logo} alt="logo-shop" />
-          </div>
-          <div className="logo-text">
-            <p className="tag-logo">Blanja</p>
-          </div>
+          <BrandSmall/>
         </div>
         <h4 className="tag-h4">Please sign up with your account</h4>
         <div className="col-md-12 d-flex justify-content-center align-items-center mt-3">

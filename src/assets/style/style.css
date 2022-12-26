@@ -9,7 +9,8 @@
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  padding-left: 5px
+  padding-left: 5px;
+  text-align: center;
 }
 
 #search {

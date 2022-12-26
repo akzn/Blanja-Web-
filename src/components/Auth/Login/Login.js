@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authLoginCreator } from "../../../redux/actions/auth";
 import { Logo } from "../../../assets/style/index";
 import "./login2.css";
+import {BrandSmall} from "../../Brand"
 
 const Login = ({ changeToRegister, changeToReset }) => {
   const dispatch = useDispatch();
@@ -39,12 +40,7 @@ const Login = ({ changeToRegister, changeToReset }) => {
     <div className="d-flex justify-content-center align-items-center container-auth">
       <div className="content">
         <div id="logo" style={{justifyContent: 'center'}}>
-          <div className="logo-shop">
-            <img src={Logo} alt="logo-shop" />
-          </div>
-          <div className="logo-text">
-            <p className="tag-logo">Blanja</p>
-          </div>
+          <BrandSmall/>
         </div>
         <div className="col-md-12 text-center mt-3">
           <p className="font-weight-bold">Please login with your account</p>

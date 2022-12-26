@@ -12,6 +12,7 @@ import "./Navbar/style.css";
 import SearchBar from "./SearchBar/SearchBar";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import { BrandSmall } from "./Brand";
 
 const Navbar = ({ changeToLogin, changeToRegister, props }) => {
   const dispatch = useDispatch();
@@ -113,14 +114,7 @@ const Navbar = ({ changeToLogin, changeToRegister, props }) => {
           <div className="container">
             <div className="col-sm-2 col-lg-2 gap">
               <Link to="/" style={{ textDecoration: "none" }}>
-                <div className="logo-brand row">
-                  <div class="col-sm-4">
-                    <img src={Logo} class="img" hight="60" width="60" alt="logo-shop" />
-                  </div>
-                  <div class="col-sm-8">
-                    <h1>Let's Shop</h1>
-                  </div>
-                </div>
+                <BrandSmall />
               </Link>
             </div>
             <button
