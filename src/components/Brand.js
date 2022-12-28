@@ -8,14 +8,27 @@ var BrandTitle = "Let's Shop"
 const BrandSmall = () => {
   return (
     <div className="logo-brand row">
-      <div class="col-sm-4">
-        <img src={Logo} class="img" hight="80" width="80" alt="logo-shop" />
+      <div class="col-sm-12">
+        <img src={Logo} class="img" hight="200" width="170" alt="logo-shop" />
       </div>
-      <div class="col-sm-8">
+      {/* <div class="col-sm-8">
         <h1>{BrandTitle}</h1>
-      </div>
+      </div> */}
     </div>
   )
 }
 
-export {BrandSmall};
+const BrandMedium = () => {
+  return (
+    <div className="logo-brand row">
+      <div class="col-sm-12">
+        <img src={Logo} class="img" hight="200" width="350" alt="logo-shop" />
+      </div>
+      {/* <div class="col-sm-8">
+        <h1>{BrandTitle}</h1>
+      </div> */}
+    </div>
+  )
+}
+
+export {BrandSmall,BrandMedium};

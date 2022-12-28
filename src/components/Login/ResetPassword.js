@@ -6,6 +6,7 @@ import Axios from "axios";
 import { Redirect } from "react-router-dom";
 import "../../assets/style/login.css";
 import { API } from "../../utility/Auth";
+import { BrandMedium } from "../Brand";
 
 const ResetPassword = ({ changeToRegister }) => {
   const [isreset, setIsReset] = useState(false);
@@ -31,12 +32,7 @@ const ResetPassword = ({ changeToRegister }) => {
       <form>
         <div className="content">
           <div id="logo" style={{ justifyContent: "center" }}>
-            <div className="logo-shop">
-              <img src={Logo} alt="logo-shop" />
-            </div>
-            <div className="logo-text">
-              <p className="tag-logo">Blanja</p>
-            </div>
+            <BrandMedium/>
           </div>
           <div className="col-md-12 text-center mt-3">
             <p className="font-weight-bold">Reset password</p>
