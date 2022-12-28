@@ -4,6 +4,7 @@
 ### env development : 
  - agar endpoint midtrans redirection bekerja, atur host blanja.test ke localhost.  
  - setelah backend (BlanjaAPI) terinstall, run `knex migrate:latest` pda cli backend untuk melakukan migrasi database ke scheme terbaru. 
+ - pastikan credential midtrans client sudah diinputkan pada file .env. Jika belum punya, register ke midtrans dan copy server/client secret pada dashboard sandbox midtrans ke .env. Pastikan credential yang dicopy adalah credential sandbox
 
 ## About the project
 
