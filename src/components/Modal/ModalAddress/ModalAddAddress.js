@@ -47,6 +47,7 @@ export default function ModalAddAddress(props) {
         },
       })
       .then((res) => {
+        console.log('address add:',res)
         if (res.data.status === 200) {
           props.onHide();
           // setAddresss(true);

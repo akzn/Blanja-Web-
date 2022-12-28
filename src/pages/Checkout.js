@@ -18,6 +18,7 @@ import { API } from "../utility/Auth";
 import "react-toastify/dist/ReactToastify.css";
 import "../assets/style/mybag.css";
 import "../assets/style/checkout.css";
+import LoadingOverlay from "react-loading-overlay";
 
 toast.configure();
 const Checkout = (props) => {
@@ -27,6 +28,7 @@ const Checkout = (props) => {
   const [showPayment, setShowPayment] = useState(false);
   const [address, setAddress] = useState([]);
   const [isRender, setIsRender] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const checkout = useSelector((state) => state.product.checkout);
@@ -65,32 +67,57 @@ const Checkout = (props) => {
 
   const history = useHistory();
 
-  const transaction = () => {
-    axios
-      .post(`${API}/orders`, checkout, {
-        headers: {
-          "x-access-token": "Bearer " + token,
-        },
-      })
-      .then((res) => {
-        console.log("success", res);
-        history.push("/");
-      })
-      .catch((err) => {
-        console.log("ERROR", err.response);
-      });
-    dispatch(clearCart());
-    dispatch(clearCheckout());
-    toast.success("Success! your order will be processed. ", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      transition: Bounce,
-    });
-    setShowPayment(false);
+  const transaction = async () => {
+    // reject transaction if addres is null 
+    if (Address === null) {  
+      toast.error("You need to pick address first ", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        transition: Bounce,
+      }); 
+    } else {
+      setIsLoading(true)
+      await axios
+        .post(`${API}/orders`, checkout, {
+          headers: {
+            "x-access-token": "Bearer " + token,
+          },
+        })
+        .then((res) => {
+          console.log("success", res);
+          dispatch(clearCart());
+          dispatch(clearCheckout());
+          setShowPayment(false);
+          history.push({
+            pathname: '/order-detail/'+transaction_code,
+            state: { 
+              id:res.data.data.id,
+              // midtransData:res.data.data.midtransData
+              requestMidtransTrx:true
+            }
+          });
+        })
+        .catch((err) => {
+          console.log("ERROR", err.response);
+        })
+        .finally(() => {
+          setIsLoading(false)
+        });
+      
+      // toast.success("Success! your order will be processed. ", {
+      //   position: "top-right",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   transition: Bounce,
+      // });  
+    }
   };
 
   console.log("tea dd", address);
@@ -104,6 +131,7 @@ const Checkout = (props) => {
       },
     })
     .then((res) => {
+      console.log('get address:',res)
       const addressNull = res.data.data;
       const addressData = res.data.data[0];
 
@@ -137,6 +165,11 @@ const Checkout = (props) => {
   // console.log("address", address);
 
   return (
+    <LoadingOverlay
+          active={isLoading}
+          spinner
+          text='Trying to connect to Payment Gateway...'
+          >
     <div>
       <Navbar />
       <div className="container">
@@ -251,7 +284,7 @@ const Checkout = (props) => {
                     className="btn-buy"
                     onClick={() => setShowPayment(true)}
                   >
-                    <p className="text-buy">Select payment</p>
+                    <p className="text-buy">Checkout</p>
                   </button>
                 </div>
               </div>
@@ -295,6 +328,7 @@ const Checkout = (props) => {
         }}
       />
     </div>
+    </LoadingOverlay>
   );
 };
 

@@ -54,6 +54,7 @@ export default class SnapMidtrans extends PureComponent {
   }
 
   mergeWithChildren(children) {
+    console.log('midtransprop',this.props)
     children = cloneElement(
       children,
       // Assign new Props
@@ -62,9 +63,28 @@ export default class SnapMidtrans extends PureComponent {
           // If Children have a onClick
           children.onClick && children.onClick()
           if (this.state.token && this.state.token !== '') {
+            let mainCallBack = this.props.callBack
             this.state.snap.pay(
               this.state.token,
               /** @todo options **/
+              {
+                onSuccess: function(result){
+                  mainCallBack(result);
+                },
+                onPending: function(result){
+                  /* pending handle */
+                  mainCallBack(result);
+                  // alert('pending')
+
+                },
+                onError: function(result){
+                  mainCallBack(result);
+                },
+                onClose: function(result){
+                  // mainCallBack(result);
+                  // alert('close')
+                },
+              }
             )
           }
           this.props.onClick && this.props.onClick()

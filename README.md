@@ -1,5 +1,10 @@
 # Blanja-Web
 
+## Note
+### env development : 
+ - agar endpoint midtrans redirection bekerja, atur host blanja.test ke localhost.  
+ - setelah backend (BlanjaAPI) terinstall, run `knex migrate:latest` pda cli backend untuk melakukan migrasi database ke scheme terbaru. 
+
 ## About the project
 
 Blanja-Web adalah sebuah web e-commerce dimana customer bisa membeli barang yang dicari dan seller bisa menjual barang. Blanja-Web ini dibuat untuk memudahkan seller dan customer dalam bertransaksi. Dibuat dengan framework javascript yaitu React Js untuk frontend, ExpressJs untuk backend, dan MYSQL untuk database.

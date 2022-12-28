@@ -22,7 +22,7 @@ const ModalSelectPayment = (props) => {
           Payment
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="no-border modal-body-container">
+      {/* <Modal.Body className="no-border modal-body-container">
         <div className="container-modal">
           <div className="row container-item-payment">
             <h4 className={classname(colors.blackText, "text-title-head")}>
@@ -66,7 +66,7 @@ const ModalSelectPayment = (props) => {
             />
           </div>
         </div>
-      </Modal.Body>
+      </Modal.Body> */}
       <Modal.Body className="no-border">
         <div className="container-modal">
           <div className="row container-item-payment">

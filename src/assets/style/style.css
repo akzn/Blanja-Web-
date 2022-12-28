@@ -1,3 +1,26 @@
+._loading_overlay_overlay{
+  z-index: 1021 !important;
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+._loading_overlay_wrapper{
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+} 
+
+.vertical-align{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .logo-brand h1 {
   /* margin-top: -40px;
   margin-left: 40px; */

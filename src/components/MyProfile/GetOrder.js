@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Jumbotron } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Sidebar from "../SidebarProfile/Sidebar";
 import Navbar from "../Navbar";
 import axios from "axios";
@@ -61,7 +62,7 @@ const GetOrder = () => {
                         <th scope="col">Status Order</th>
                         <th scope="col">Address</th>
                         <th scope="col">Total Price</th>
-                        <th scope="col">Product Name</th>
+                        {/* <th scope="col">Product Name</th> */}
                       </tr>
                     </thead>
                     <tbody>
@@ -77,12 +78,16 @@ const GetOrder = () => {
                           return (
                             <>
                               <tr>
-                                <td>{transaction_code}</td>
+                                <td>
+                                  <Link to={{ pathname: "/order-detail/"+transaction_code,  state: { id } }} style={{ textDecoration: "none" }}>
+                                    {transaction_code}
+                                  </Link>
+                                </td>
                                 <td>{status_order}</td>
                                 <td>{address}</td>
                                 <td>Rp. {total}</td>
 
-                                {order_detail.map(
+                                {/* {order_detail.map(
                                   ({ category_name, product_name }) => {
                                     return (
                                       <>
@@ -90,7 +95,7 @@ const GetOrder = () => {
                                       </>
                                     );
                                   }
-                                )}
+                                )} */}
                               </tr>
                             </>
                           );

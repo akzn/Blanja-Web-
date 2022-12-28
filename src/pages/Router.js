@@ -28,6 +28,11 @@ import KonfirmasiPassword from "../components/Login/KonfirmasiPassword";
 import Auth from "./Auth";
 import Chat from "../components/Chat/Chat";
 
+import OrderDetail from "./OrderDetail";
+
+// midtrans
+import {MidtransFinishRedirect} from "./Midtrans"
+
 export default function Router() {
   return (
     <BrowserRouter>
@@ -41,8 +46,10 @@ export default function Router() {
       <PrivateRouter path="/myproduct" component={GetProduct} />
       <PrivateRouter path="/shippingAddress" component={ShippingAddress} />
       <PrivateRouter path="/myorder" component={GetOrder} />
+      <PrivateRouter path="/order-detail" component={OrderDetail} />
       <PrivateRouter path="/update" component={Update} />
       <PrivateRouter path="/chat" component={Chat} />
+      <PrivateRouter path="/midtrans-finish-redirect" component={MidtransFinishRedirect} />
       <Route path="/category/:id_categories" component={SortCategory} />
       <Route path="/search" component={Search} />
       <Route path="/filter" component={Filter} />
