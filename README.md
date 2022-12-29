@@ -2,8 +2,9 @@
 
 ## Note
 ### env development : 
-  - setelah backend (BlanjaAPI) terinstall, run `knex migrate:latest` pda cli backend untuk melakukan migrasi database ke scheme terbaru. 
- - pastikan credential midtrans client sudah diinputkan pada file .env. Jika belum punya, register ke midtrans dan copy server/client secret pada dashboard sandbox midtrans ke .env. Pastikan credential yang dicopy adalah credential sandbox
+- setelah backend (BlanjaAPI) terinstall, run `knex migrate:latest` pda cli backend untuk melakukan migrasi database ke scheme terbaru. 
+- pastikan credential midtrans client sudah diinputkan pada file .env. Jika belum punya, register ke midtrans dan copy server/client secret pada dashboard sandbox midtrans ke .env. Pastikan credential yang dicopy adalah credential sandbox
+- Gunakan [Sanbox testing](https://docs.midtrans.com/en/technical-reference/sandbox-test) untuk testing payment midtrans. JANGAN GUNAKAN AKUN/BANK ASLI untuk testing. 
 
 ## About the project
 
