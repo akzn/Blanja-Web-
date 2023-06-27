@@ -19,7 +19,7 @@ const ModalSelectPayment = (props) => {
     >
       <Modal.Header closeButton className="shadow-sm">
         <Modal.Title className="text-top" id="contained-modal-title-vcenter">
-          Payment
+          Summary
         </Modal.Title>
       </Modal.Header>
       {/* <Modal.Body className="no-border modal-body-container">
@@ -70,21 +70,21 @@ const ModalSelectPayment = (props) => {
       <Modal.Body className="no-border">
         <div className="container-modal">
           <div className="row container-item-payment">
-            <h4 className={classname(colors.blackText, "text-title-head")}>
-              Shopping summary
-            </h4>
+            <h5 className={classname(colors.blackText)}>
+              Payment Details
+            </h5>
           </div>
           <div className="row align-items-center container-item-summary">
-            <h4 className={classname(colors.grayText, text.text)}>Order</h4>
-            <h3 className="ml-auto text-price">{`Rp${props.cart
+            <h5 className={classname(colors.grayText)}>Order</h5>
+            <h5 className="ml-auto text-danger">{`Rp${props.cart
               .reduce((total, item) => {
                 return total + item.price * item.qty;
               }, 0)
-              .toLocaleString("id-ID")}`}</h3>
+              .toLocaleString("id-ID")}`}</h5>
           </div>
           <div className="row align-items-center container-item-summary">
-            <h4 className={classname(colors.grayText, text.text)}>Delivery</h4>
-            <h3 className="ml-auto text-price">Rp5.000</h3>
+            <h5 className={classname(colors.grayText)}>Delivery</h5>
+            <h5 className="ml-auto text-danger">Rp5.000</h5>
           </div>
         </div>
       </Modal.Body>
@@ -92,8 +92,8 @@ const ModalSelectPayment = (props) => {
         <div className="container-modal-footer">
           <div className="row">
             <div className="col">
-              <h4 className={classname(colors.blackText, "text-title-head")}>
-                Shopping summary
+              <h4 className={classname(colors.blackText)}>
+                Total
               </h4>
               <h3
                 className={classname(colors.primaryText, "text-price")}
@@ -108,7 +108,7 @@ const ModalSelectPayment = (props) => {
                 className="btn btn-danger btn-bu"
                 onClick={props.onSubmit}
               >
-                Buy
+                Continue to Payment
               </button>
             </div>
           </div>

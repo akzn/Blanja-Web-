@@ -12,7 +12,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import "../assets/style/mybag.css";
 import emptyCart from "../assets/image/empty-cart.png";
-import { Alert, Modal } from "react-bootstrap";
+import { Alert, Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import { API } from "../utility/Auth";
 
@@ -113,7 +113,7 @@ const Mybag2 = () => {
         {stateCarts.length ? (
           <div className="row">
             <div className="col-12 col-md-8 left">
-              <div className="col chart justify-content-between">
+              <div className="col chart justify-content-between" style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}>
                 <div className="selectAll">
                   <div className="mt-3">
                     <input
@@ -143,10 +143,11 @@ const Mybag2 = () => {
                 return (
                   <div
                     className="row prodct"
-                    style={{ marginRight: 0, marginLeft: 0 }}
+                    // style={{ marginRight: 0, marginLeft: 0 }}
                     key={item.id}
+                    style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",marginRight: 0, marginLeft: 0 }}
                   >
-                    <div className="col-12 col-sm-5 align-items-center side">
+                    <div className="col-12 col-md-7 align-items-center side">
                       <div className="d-flex flex-row align-items-center">
                         <input
                           type="checkbox"
@@ -173,7 +174,7 @@ const Mybag2 = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="col-6 col-sm-3 align-items-center side">
+                    <div className="col-6 col-md-2 align-items-center side">
                       <div
                         className="d-flex justify-content-start align-items-center"
                         style={{}}
@@ -228,8 +229,8 @@ const Mybag2 = () => {
                         </button>
                       </div>
                     </div>
-                    <div className="col-6 col-sm-4 align-items-center side">
-                      <p className="prc">
+                    <div className="col-6 col-md-3 align-items-center side text-danger" style={{textAlign:" right",bottom: "-3vh"}}>
+                      <p className="prc" style={{fontSize:"22px"}}>
                         {`Rp. ${(item.price * item.qty).toLocaleString(
                           "id-ID"
                         )}`}
@@ -240,11 +241,11 @@ const Mybag2 = () => {
               })}
             </div>
             <div className="col-12 col-md-4 right">
-              <div className="shop-sumry">
+              <div className="shop-sumry mb-4" style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}>
                 <p className="smry-title">Shopping summary</p>
                 <div className="ttl-price">
                   <p className="text-price text-muted">Total price</p>
-                  <p className="pay">
+                  <p className="pay text-danger" style={{fontSize:"22px"}}>
                     Rp.
                     {stateCarts
                       .filter((item) => item.selected === true)
@@ -263,17 +264,18 @@ const Mybag2 = () => {
                       address,
                     }}
                   >
-                    <button className="btn-buy" onClick={kirim}>
+                    <Button variant="primary" style={{width:"100%"}} className="btn-buy" onClick={kirim}>
                       <p className="text-buy">Buy</p>
-                    </button>
+                    </Button>
                   </Link>
                 ) : (
-                  <button
+                  <Button
+                    variant="primary" style={{width:"100%"}}
                     className="btn-buy"
                     onClick={() => setShowAlert(true)}
                   >
                     <p className="text-buy">Buy</p>
-                  </button>
+                  </Button>
                 )}
               </div>
               {showAlert

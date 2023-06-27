@@ -13,6 +13,7 @@ const NewData = () => {
       .get(`${getUrl}/products?limit=15&keyword=created_at DESC`)
       .then((res) => {
         const newProduct = res.data.data.products;
+        // console.log('newProduct',newProduct);
         setProducts(newProduct);
       })
       .catch((err) => {

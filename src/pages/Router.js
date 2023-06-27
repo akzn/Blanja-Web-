@@ -17,6 +17,16 @@ import EditProduct from "../components/MyProfile/EditProduct";
 import GetOrder from "../components/MyProfile/GetOrder";
 import ChangePassword from "../components/MyProfile/ChangePassword";
 import ShippingAddress from "../components/MyProfile/ShippingAddress";
+// ADMIN PAGE
+import PrivateRouterAdmin from "../components/PrivateRouterAdmin";
+import AdminLogin from "./admin/login/ViewLogin";
+import AdminDashboard from "./admin/Dashboard";
+import AdminFormAddProduct from "./admin/product/FormAddProduct";
+import AdminProductList from "./admin/product/ViewProductList";
+import AdminFormProductEdit from "./admin/product/FormProductEdit";
+import AdminOrderList from "./admin/order/ViewOrderList";
+import AdminOrderDetail from "./admin/order/ViewOrderDetail";
+import AdminShippingAddress from "./admin/setting/ViewShippingAddress";
 
 // Login Page
 // import Login from "../components/";
@@ -58,6 +68,18 @@ export default function Router() {
       <Route path="/confrim" component={KonfirmasiPassword} />
       <Route path="/register" component={Register} />
       <Route path="/change" component={ChangePassword} />
+
+      {/* ADMIN PAGE */}
+      <PrivateRouterAdmin exact path="/admin" component={AdminDashboard} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <PrivateRouterAdmin path="/admin/dashboard" component={AdminDashboard} />
+      <PrivateRouterAdmin path="/admin/new-product" component={AdminFormAddProduct} />
+      <PrivateRouterAdmin path="/admin/product-list" component={AdminProductList} />
+      <PrivateRouterAdmin path="/admin/edit-product" component={AdminFormProductEdit} />
+      <PrivateRouterAdmin path="/admin/order-list" component={AdminOrderList} />
+      <PrivateRouterAdmin path="/admin/order-detail/:transaction_code" component={AdminOrderDetail} />
+      <PrivateRouterAdmin path="/admin/shipping-address" component={AdminShippingAddress} />
+
     </BrowserRouter>
   );
 }

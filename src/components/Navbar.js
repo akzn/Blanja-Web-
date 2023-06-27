@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal,Button } from "react-bootstrap";
 import { Logo } from "../assets/style";
 import { Link } from "react-router-dom";
 import Login from "../components/Auth/Login/Login";
@@ -192,18 +192,19 @@ const Navbar = ({ changeToLogin, changeToRegister, props }) => {
                       />
                       </Link>
                       <Link to="/profile">
-                        <div className="dp-profil-nav">
-                          <img className="img-profil-nav" alt="" />
+                        <div className="dp-profil-nav" style={{width:"40px",height:"40px"}}>
+                          <img className="img-profil-nav" style={{width:"40px",height:"40px"}} alt="" />
                         </div>
                       </Link>
                       <div className="login">
-                        <button
+                        <Button
+                          variant="primary"
                           type="submit"
-                          className="btn-login btn my-2 my-sm-2"
+                          className="btn-login btn my-2 my-sm-2 btn-sm"
                           onClick={() => setModalShow(true)}
                         >
-                          Logout
-                        </button>
+                          Log Out
+                        </Button>
                       </div>
                     </div>
                   </>

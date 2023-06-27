@@ -6,6 +6,7 @@ import Loader from "../assets/image/loader.gif";
 import ModalChooseAddress from "../components/Modal/ModalAddress/ModalChooseAddress";
 import ModalSelectPayment from "../components/Modal/ModalAddress/ModalSelectPayment";
 import ModalAddAddress from "../components/Modal/ModalAddress/ModalAddAddress";
+import ModalCourierSelection from "../components/Modal/Shipment/CourierSelectionModal";
 import { Bounce, toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,6 +14,7 @@ import {
   clearCheckout,
   addToCheckout,
 } from "../redux/actions/product";
+import {Button,Card} from 'react-bootstrap';
 import axios from "axios";
 import { API } from "../utility/Auth";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,12 +22,14 @@ import "../assets/style/mybag.css";
 import "../assets/style/checkout.css";
 import LoadingOverlay from "react-loading-overlay";
 
+
 toast.configure();
 const Checkout = (props) => {
   const [showChooseAddress, setShowChooseAddress] = useState(false);
   const [showChooseAddres2, setShowChooseAddress2] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [showCourierSelection, setShowCourierSelection] = useState(false);
   const [address, setAddress] = useState([]);
   const [isRender, setIsRender] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -181,32 +185,33 @@ const Checkout = (props) => {
         {stateCarts.filter((item) => item.selected === true).length ? (
           <div className="row">
             <div className="col-12 col-lg-8">
-              <p className="ttl-addrs">Shipping Address</p>
+              <div className="col address" style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",marginTop:"unset" }}>
+              {/* <p className="ttl-addrs">Shipping Address</p> */}
+              <Card.Title>Shipping Address</Card.Title>
               {address ? (
                 <>
-                  <div className="col address">
+                    <div>
                     <p>{address.fullname}</p>
                     <p>
                       {`${address.address}, Kota ${address.city}, Provinsi ${address.region}, Kodepos: ${address.zip_code}, ${address.country}`}
                     </p>
-                    <button
-                      className="btn-choose-address"
+                    <Button
+                      // className="btn-choose-address"
+                      variant="secondary"
                       onClick={() => {
                         setShowChooseAddress(true);
                         getAddressUser(address);
                       }}
                       style={{ display: "flex" }}
                     >
-                      <p className="addres-btn">Choose another address</p>
-                    </button>
+                      {/* <p className="addres-btn">Choose another address</p> */}
+                      Change address
+                    </Button>
                   </div>
                 </>
               ) : (
                 <>
-                  <div
-                    className="col address"
-                    // style={{ justifyContent: "center" }}
-                  >
+                  <div>
                     <h3>you haven't entered the address yet</h3>
                     <p>add your address first!</p>
                     <button
@@ -227,6 +232,19 @@ const Checkout = (props) => {
                   </div>
                 </>
               )}
+              </div>
+
+              <Card style={{boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",marginTop:"15px"}}>
+                <Card.Body>
+                  <Card.Title>Choose Courier</Card.Title>
+                  <Card.Text style={{color:'#6b6b6b'}}>
+                    Pick your favourite shipment courier
+                  </Card.Text>
+                  <Button variant="primary" onClick={() => setShowCourierSelection(true)}>Choose</Button>
+                </Card.Body>
+              </Card>
+
+              <h4 style={{marginTop:'20px',marginBottom:'unset'}}>Items :</h4>
               {stateCarts
                 .filter((item) => item.selected === true)
                 .map((item) => {
@@ -234,11 +252,11 @@ const Checkout = (props) => {
                     <div
                       className="col prodct d-flex justify-content-between"
                       key={item.id}
-                      style={{ padding: "10px", marginBottom: "20px" }}
+                      style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",padding: "10px", marginBottom: "10px",marginTop: '8px' }}
                     >
                       {/* <div className="selectAll" > */}
-                      <div className="col-2 img-chart">
-                        <img
+                      <div className="col-2 img-chart align-items-center d-flex flex-column" style={{marginLeft:" 10px",marginRight:" 10px"}}>
+                        <img className="mx-auto"
                           style={{ height: "70px" }}
                           src={API + item.photo}
                           alt=""
@@ -248,8 +266,8 @@ const Checkout = (props) => {
                         <p className="name-prodct">{item.name}</p>
                         <p className="brand-product text-muted">{item.brand}</p>
                       </div>
-                      <div className="col-3">
-                        <p className="prc">{`Rp. ${(
+                      <div className="col-3" style={{textAlign:" right",flex: "0 0 24%",bottom: "-3vh"}}>
+                        <p className="prc text-danger" style={{fontSize: "18px"}}>{`Rp. ${(
                           item.price * item.qty
                         ).toLocaleString("id-ID")}`}</p>
                       </div>
@@ -259,16 +277,20 @@ const Checkout = (props) => {
                 })}
             </div>
             <div className="col-12 col-lg-4">
-              <div className="shop-sumry">
-                <p className="smry-title">Shopping summary</p>
+              <div className="shop-sumry" style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}>
+                <h5 style={{marginBottom:"30px"}}>Shopping summary</h5>
                 <div className="ttl-price">
-                  <p className="text-price text-muted">Total price</p>
-                  <p className="pay">{`Rp${stateCarts
+                  <p className="text-price text-muted" style={{fontSize:"20px"}}>Total price</p>
+                  <p className="pay text-danger">{`Rp${stateCarts
                     .filter((item) => item.selected === true)
                     .reduce((total, item) => {
                       return total + item.price * item.qty;
                     }, 0)
                     .toLocaleString("id-ID")}`}</p>
+                </div>
+                <div className="ttl-price">
+                  <p className="text-price text-muted" style={{fontSize:"20px"}}>Shipping Fee</p>
+                  <p className="pay text-danger">Rp 5.000</p>
                 </div>
                 <div
                   style={{
@@ -280,12 +302,15 @@ const Checkout = (props) => {
                   }}
                 ></div>
                 <div className="text-decoration-none">
-                  <button
+                  <Button
+                    variant="primary"
                     className="btn-buy"
                     onClick={() => setShowPayment(true)}
+                    style={{width:"100%"}}
                   >
-                    <p className="text-buy">Checkout</p>
-                  </button>
+                    {/* <p className="text-buy">Checkout</p> */}
+                    Checkout
+                  </Button>
                 </div>
               </div>
             </div>
@@ -325,6 +350,14 @@ const Checkout = (props) => {
           setShowAddAddress(false);
           getAddressUser(address);
           // setShowChooseAddress(false);
+        }}
+      />
+
+      <ModalCourierSelection
+        show={showCourierSelection}
+        onHide={() => {
+          setShowCourierSelection(false);
+          // getAddressUser(address);
         }}
       />
     </div>

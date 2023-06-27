@@ -81,7 +81,7 @@ export default class SnapMidtrans extends PureComponent {
                   mainCallBack(result);
                 },
                 onClose: function(result){
-                  // mainCallBack(result);
+                  mainCallBack('close');
                   // alert('close')
                 },
               }

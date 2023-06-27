@@ -1,0 +1,15 @@
+## Perubahan
+- [] shipment API
+- [] http://localhost:3000/login 
+    - ubah seller, buat front page baru  ke to http://localhost:3000/admin
+    - ubah hubungan produk x seller,  order x seller 
+- [] Buat admin panel, menu
+  - products
+    - Items : 
+      - bug: add product masuk db tapi tidak terdiplay ke front end.
+  - orders : 
+    - detail : ada 
+    - payment menu :  
+    - shipment menu : 
+  - setting : 
+    - address : (untuk kalkulasi ongkir seller ke buyer)
