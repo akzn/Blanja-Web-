@@ -34,7 +34,14 @@ const Login = ({ changeToRegister, changeToReset }) => {
     
   });
 
-  
+  const hideStyle = {
+    display: 'none',
+    important: 'true' // Custom property to simulate !important behavior
+  };
+
+  hideStyle.cssText = Object.entries(hideStyle)
+    .map(([property, value]) => `${property}: ${value} !important;`)
+    .join(' ');
 
   return (
     <div className="d-flex justify-content-center align-items-center container-auth">
@@ -43,9 +50,9 @@ const Login = ({ changeToRegister, changeToReset }) => {
           <BrandMedium/>
         </div>
         <div className="col-md-12 text-center mt-3">
-          <p className="font-weight-bold">Please login with your account</p>
+          <p className="font-weight-bold">Customer Login</p>
         </div>
-        <div className="col-md-12 d-flex justify-content-center align-items-center mt-3">
+        <div className="col-md-12 d-flex justify-content-center align-items-center mt-3" style={hideStyle}>
           <button
             type="button"
             className={styleBtnCustomer}

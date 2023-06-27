@@ -81,7 +81,7 @@ const ViewLogin = ({ changeToRegister, changeToReset }) => {
             <img src={Logo} alt="logo-shop" />
           </div>
           <div className="logo-text">
-            <p className="tag-logo">Blanja</p>
+            <p className="tag-logo"></p>
           </div>
         </div>
         <h4 className="tag-h4">Administrator Login</h4>
