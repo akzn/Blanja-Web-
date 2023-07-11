@@ -100,7 +100,18 @@ export default function ViewShippingAddress() {
     };
 
     const ReloadPage = () => {
-        window.location.reload();
+        // window.location.reload();
+      getAddressUser(changeAddress);
+      setShowChooseAddress(false)
+      // toast.success("Address Added Successfully!", {
+      //   position: "top-right",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   transition: Bounce,
+      // });
     }
   
     return (
@@ -146,22 +157,29 @@ export default function ViewShippingAddress() {
                             {address.is_primary == '1' ? <Badge variant="primary" style={{marginBottom:"10px"}}>Primary Address</Badge> : '' }
 
                             {/* <h5 className={styles.delete}>DELETE</h5> */}
-                            <h5 className={styles.listtitle}>
-                              {address.fullname}
+                            <h5 className={styles.listtitle} style={{marginTop:"20px"}}>
+                              Receiver : {address.fullname}
                             </h5>
                             <p className={styles.detailaddres}>
-                              {`${address.address}, ${address.city}, Kota. ${address.city}, Prov. ${address.region}, ${address.zip_code}, ${address.country}`}
+                              Phone Number : {`${address.phone}`}
+                            </p>
+                            <p className={styles.detailaddres}>
+                              {`${address.address}`}
+                            </p>
+                            <p className={styles.detailaddres}>
+                              {`${address.city}, Kota. ${address.city}, Prov. ${address.region}, ${address.zip_code}, ${address.country}`}
                             </p>
                             
-                              <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                marginBottom: "20px",
-                                marginTop: "20px",
-                                justifyContent: "space-around",
-                              }}
-                            >
+                               {address.is_primary == '0' ? (
+                                <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  marginBottom: "20px",
+                                  marginTop: "20px",
+                                  justifyContent: "space-around",
+                                }}
+                              >
                               <button
                                 className="editProd"
                                 style={{width:'unset',padding:'0 10px',marginRight:'10px'}}
@@ -169,16 +187,18 @@ export default function ViewShippingAddress() {
                               >
                                 <div className="btn-login-nav ">Set as Primary Address</div>
                               </button>
-
+                 
                               <button
                                 className="deleteProd"
                                 onClick={() => _handleDeleteAddress(address.id_address)}
                               >
                                 <div className="btn-login-nav ">Delete</div>
-                              </button>
+                              </button> 
+                              </div>
+                              ) : ''}
                             </div>
                             
-                          </div>
+                         
                           : ''}
                           </div>
                         );

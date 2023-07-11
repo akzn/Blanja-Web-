@@ -20,6 +20,7 @@ const Navbar = ({ changeToLogin, changeToRegister, props }) => {
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   const isLogin = useSelector((state) => state.auth.isFulfilled);
   const token = useSelector((state) => state.auth.data.token);
+  const dataUser = useSelector((state) => state.auth.data);
   const [show, setShow] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
@@ -191,11 +192,20 @@ const Navbar = ({ changeToLogin, changeToRegister, props }) => {
                         icon={faEnvelope}
                       />
                       </Link>
-                      <Link to="/profile">
-                        <div className="dp-profil-nav" style={{width:"40px",height:"40px"}}>
-                          <img className="img-profil-nav" style={{width:"40px",height:"40px"}} alt="" />
-                        </div>
-                      </Link>
+                      {(dataUser.level == 2) ? (
+                        <Link to="/admin">
+                          <div className="dp-profil-nav" style={{width:"40px",height:"40px"}}>
+                            <img className="img-profil-nav" style={{width:"40px",height:"40px"}} alt="" />
+                          </div>
+                        </Link>
+                      ) : (
+                        <Link to="/profile">
+                          <div className="dp-profil-nav" style={{width:"40px",height:"40px"}}>
+                            <img className="img-profil-nav" style={{width:"40px",height:"40px"}} alt="" />
+                          </div>
+                        </Link>
+                      )}
+
                       <div className="login">
                         <Button
                           variant="primary"

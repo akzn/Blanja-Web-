@@ -34,8 +34,10 @@ const cartReducer = (state = initialState, { type, payload }) => {
         checkout: {
           transaction_code: payload.transaction_code,
           id_address: payload.id_address,
+          id_store_address: payload.id_store_address,
           seller_id: payload.seller_id,
           item: payload.item,
+          courier: payload.courier
         },
       };
     case actions.CLEAR_CHECKOUT:

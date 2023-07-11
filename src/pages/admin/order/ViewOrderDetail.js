@@ -1,19 +1,28 @@
 import React, { useEffect, useState,useRef } from "react";
 import Layout from '../../../components/Admin/Layout';
-import { Container, Row, Col, Card, Table, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Button, Modal, Form } from 'react-bootstrap';
 import axios from "axios";
 import { API } from "../../../utility/Auth";
 import { formatNumber, getMidtransStatus, PaymentStatusLabel } from "../../../helpers/Utils";
 import { useSelector } from "react-redux";
 import styles from "./order.module.css";
 import LoadingOverlay from "react-loading-overlay";
+import ShipmentHistory from '../../../components/Modal/Shipment/ShipmentHistoryModal';
+import { Bounce, toast } from "react-toastify";
+
+
 
 const ViewOrderDetail = (props) => {
   var order_id = props.location.state.id
   const token = useSelector((state) => state.auth.data.token);
   const [order, setOrder] = useState([]);
   const [orderDetail, setOrderDetail] = useState([]);
+  const [shippmentData, setShippmentData] = useState({});
   const [spinner, setSpinner] = useState(false);
+  const [showModalAddTrackingNumber, setShowModalAddTrackingNumber] = useState(false);
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [showModalTrackingHistory, setShowModalTrackingHistory] = useState(false);
+  const [trackingData, setTrackingData] = useState(null);
 
   const orderDummy = {
     id: '12345',
@@ -107,6 +116,135 @@ const ViewOrderDetail = (props) => {
     return `${day}-${month}-${year}`;
   };
 
+  // get shipment data
+  const getShipmentDetail = async () => {
+    if (order.transaction_code) {
+        try {
+            const response = await axios.get(`${API}/shipping/detail/${order.transaction_code}`, {
+                headers: {
+                    "x-access-token": "Bearer " + token,
+                },
+            });
+            const shipmentDetail = response.data.data;
+            setShippmentData(shipmentDetail);
+            // Process the shipment detail data as needed
+            console.log('Shipment Detail:', shipmentDetail);
+        } catch (error) {
+            console.error('Error fetching shipment detail:', error);
+            // Handle the error or display an error message
+        }
+    }
+  };
+  useEffect(() => {
+      getShipmentDetail();
+  },[order])
+  // end get shipment data
+
+
+  // save tracking number
+  const handleOpenModalAddTrackingNumber = () => {
+    setShowModalAddTrackingNumber(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModalAddTrackingNumber(false);
+  };
+
+  const handleSaveTrackingNumber = () => {
+    // Perform any necessary logic with the tracking number
+    let body = {
+      order_id: order.id,
+      tracking_number: trackingNumber 
+    }
+      setSpinner(true)
+    axios
+      .post(`${API}/shipping/tracking-number`, body , {
+        headers: {
+          "x-access-token": "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        console.log('Tracking number saved:', response);
+        setTrackingNumber('');
+        setShowModalAddTrackingNumber(false);
+        getShipmentDetail()
+      })
+      .catch((error) => {
+        console.error('Error saving tracking number:', error);
+        setShowModalAddTrackingNumber(false);
+
+        // Handle the error or display an error message
+      })
+      .finally(() => {
+        setSpinner(false)
+      });;
+  };
+
+  // END save tracking number
+
+  // tracking history
+      // Function to open the modal and set the tracking data
+      const openModalTrackingHistory = () => {
+        setSpinner(true)
+        axios
+        .get(`${API}/shipping/tracking?tracking_number=${shippmentData.order[0].courier_tracking_number}&courier_code=${shippmentData.order[0].courier_code}`, {
+            headers: {
+                "x-access-token": "Bearer " + token,
+            },
+        })
+        .then((response) => {
+          const fetchedTrackingData = response.data;
+          setTrackingData(fetchedTrackingData);
+          setShowModalTrackingHistory(true);
+        })
+        .catch((error) => {
+          console.error('Error fetching tracking data:', error);
+          // Handle the error or display an error message
+          alert('NO DATA FOUND')
+        })
+        .finally(() => {
+          setSpinner(false)
+        });
+    };
+
+    // Function to close the modal
+    const closeModalTrackingHistory = () => {
+        setShowModalTrackingHistory(false);
+    };
+
+    // END Tracking HIstory
+
+    const handleCheckShippingStatus = () =>{
+      console.log(shippmentData.order[0].courier_tracking_number);
+      setSpinner(true)
+      axios
+        .get(`${API}/shipping/checkstatus?order_id=${shippmentData.order[0].id}&tracking_number=${shippmentData.order[0].courier_tracking_number}&courier_code=${shippmentData.order[0].courier_code}`, {
+            headers: {
+                "x-access-token": "Bearer " + token,
+            },
+        })
+        .then((response) => {
+          getShipmentDetail();
+          toast.success("Check Status success!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            transition: Bounce,
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching tracking data:', error);
+          // Handle the error or display an error message
+          alert('NO DATA FOUND')
+        })
+        .finally(() => {
+          setSpinner(false)
+        });
+    }
+
   useEffect(() => {
     getOrderItem()
   }, []);
@@ -187,30 +325,54 @@ const ViewOrderDetail = (props) => {
             )}
             </Card.Body>
         </Card>
+        {shippmentData.order && (
         <Card style={{ marginTop: '20px' }}>
             <Card.Body>
                 <h6 style={{ marginBottom: '10px' }}><strong>Shipment Details</strong></h6>
                 <hr />
                 <Row>
                     <Col>
-                      <div className={styles.col_spacing_1}><strong>Carrier:</strong> {orderDummy.shipment.carrier}</div>
-                      <div className={styles.col_spacing_1}><strong>Tracking Number:</strong> {orderDummy.shipment.trackingNumber}</div>
-                      <div className={styles.col_spacing_1}><strong>Status:</strong> {orderDummy.shipment.status}</div>
+                      <div className={styles.col_spacing_1}><strong>Carrier:</strong> {shippmentData.order[0].courier_code}</div>
+                      <div className={styles.col_spacing_1}><strong>Tracking Number:</strong> {(shippmentData.order[0].courier_tracking_number) ? shippmentData.order[0].courier_tracking_number : '-'}</div>
+                      <div className={styles.col_spacing_1}><strong>Status:</strong> {(shippmentData.order[0].shipping_status) ? shippmentData.order[0].shipping_status : 'Pending'}</div>
                     </Col>
                     <Col>
-                      <div className={styles.col_spacing_1}><strong>To :</strong> {orderDummy.shipment.receiver}</div>
-                      <div className={styles.col_spacing_1}><strong>To Address:</strong> {orderDummy.shipment.address}</div>
+                      <div className={styles.col_spacing_1}><strong>To :</strong> {shippmentData.customer_address[0].fullname}</div>
+                      <div className={styles.col_spacing_1}><strong>To Address:</strong> 
+                                <p  style={{marginBottom:'0'}}>
+                                    {shippmentData.customer_address[0].address}
+                                </p>
+                                <p style={{marginBottom:'0'}}>
+                                    {shippmentData.customer_address[0].city}
+                                </p>
+                                <p  style={{marginBottom:'0'}}>
+                                    {shippmentData.customer_address[0].region}
+                                </p>
+                                <p>
+                                    {shippmentData.customer_address[0].zipcode}
+                                </p>
+                      </div>
                     </Col>
                 </Row>
                 <Row className="mb-1 mt-3 text-right">
+                  {shippmentData.order && (
+                    shippmentData.order[0].courier_tracking_number === '' ||
+                    shippmentData.order[0].courier_tracking_number === null
+                  ) && (
+                    <Col>
+                      <Button className={["btn-sm",styles.btn]} onClick={handleOpenModalAddTrackingNumber}>Insert Tracking Number</Button>
+                    </Col>
+                  )}
                   <Col>
-                    <Button className={["btn-sm",styles.btn]}>
-                      Re-Check Status
-                    </Button>
+                    <Button className={["btn-sm",styles.btn]} onClick={openModalTrackingHistory}>View Tracking Information</Button>
+                  </Col>
+                  <Col>
+                    <Button className={["btn-sm",styles.btn]} onClick={handleCheckShippingStatus}>Re-Check Status</Button>
                   </Col>
                 </Row>
             </Card.Body>
         </Card>
+        )}
         <Card style={{marginTop: '20px'}}>
             <Card.Body>
             <h4 style={{ marginBottom: '10px' }}>Items</h4>
@@ -248,7 +410,39 @@ const ViewOrderDetail = (props) => {
         </Card>
         </Card.Body>
       </Card>
+      <Modal show={showModalAddTrackingNumber} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Tracking Number</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="trackingNumber">
+              <Form.Label>Tracking Number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter tracking number"
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSaveTrackingNumber}>
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
+
+    <ShipmentHistory
+            show={showModalTrackingHistory}
+            onClose={closeModalTrackingHistory}
+            trackingData={trackingData}
+            />    
     </Layout>
   );
 

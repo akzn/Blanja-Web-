@@ -22,6 +22,11 @@ const Mybag2 = () => {
   const [modalShow, setModalShow] = useState(false);
   const [address, setAddress] = useState([]);
 
+  const dispatch = useDispatch();
+  const stateCarts = useSelector((state) => state.product.carts);
+  console.log("STATECART", stateCarts);
+  const token = useSelector((state) => state.auth.data.token);
+
   useEffect(() => {
     getAddressUser();
   }, []);
@@ -52,11 +57,6 @@ const Mybag2 = () => {
     }
   };
 
-  const dispatch = useDispatch();
-  const stateCarts = useSelector((state) => state.product.carts);
-  console.log("STATECART", stateCarts);
-  const token = useSelector((state) => state.auth.data.token);
-
   const getAddressUser = async () => {
     await axios
       .get(`${API}/address`, {
@@ -83,6 +83,7 @@ const Mybag2 = () => {
           product_id: item.id,
           product_qty: item.qty,
           sub_total_item: item.qty * item.price,
+          weight: item.weight_gram
         };
       });
     const sendData = {

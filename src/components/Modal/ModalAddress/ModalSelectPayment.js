@@ -84,7 +84,12 @@ const ModalSelectPayment = (props) => {
           </div>
           <div className="row align-items-center container-item-summary">
             <h5 className={classname(colors.grayText)}>Delivery</h5>
-            <h5 className="ml-auto text-danger">Rp5.000</h5>
+            <h5 className="ml-auto text-danger">
+              {props.courierData && props.courierData.price && (
+                `Rp${props.courierData.price.toLocaleString('id-ID')}`
+              )}
+
+            </h5>
           </div>
         </div>
       </Modal.Body>
@@ -100,7 +105,7 @@ const ModalSelectPayment = (props) => {
               >{`Rp${props.cart
                 .reduce((total, item) => {
                   return total + item.price * item.qty;
-                }, 5000)
+                }, props.courierData.price)
                 .toLocaleString("id-ID")}`}</h3>
             </div>
             <div className="col-5 align-self-center">

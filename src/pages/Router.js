@@ -39,7 +39,6 @@ import Auth from "./Auth";
 import Chat from "../components/Chat/Chat";
 
 import OrderDetail from "./OrderDetail";
-
 // midtrans
 import {MidtransFinishRedirect} from "./Midtrans"
 

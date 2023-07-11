@@ -11,6 +11,7 @@ import ReactMidtrans from "../module/react-midtrans/src/index";
 import LoadingOverlay from 'react-loading-overlay';
 import { Bounce, toast } from "react-toastify";
 import { getMidtransStatus, PaymentStatusLabel } from "../helpers/Utils";
+import ShipmentHistory from '../components/Modal/Shipment/ShipmentHistoryModal';
 
 const getUrl = process.env.REACT_APP_URL;
 
@@ -21,9 +22,12 @@ const OrderDetail = (props) => {
     const [order, setOrder] = useState([]);
     const [orderDetail, setOrderDetail] = useState([]);
     const [midtransData, setMidtransData] = useState({});
+    const [shippmentData, setShippmentData] = useState({});
     const [requestMidtransTrx, setRequestMidtransTrx] = useState(props.location.state?.requestMidtransTrx ? props.location.state.requestMidtransTrx : false);
     const [requestMidtransSnap, setRequestMidtransSnap] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [showModalTrackingHistory, setShowModalTrackingHistory] = useState(false);
+    const [trackingData, setTrackingData] = useState(null);
     const token = useSelector((state) => state.auth.data.token);
 
     // DUmmy
@@ -221,6 +225,58 @@ const OrderDetail = (props) => {
             alert('Order Data not found')
         }
      }
+
+     // get shipment data
+     const getShipmentDetail = async () => {
+        if (order.transaction_code) {
+            try {
+                const response = await axios.get(`${getUrl}/shipping/detail/${order.transaction_code}`, {
+                    headers: {
+                        "x-access-token": "Bearer " + token,
+                    },
+                });
+                const shipmentDetail = response.data.data;
+                setShippmentData(shipmentDetail);
+                // Process the shipment detail data as needed
+                console.log('Shipment Detail:', shipmentDetail);
+            } catch (error) {
+                console.error('Error fetching shipment detail:', error);
+                // Handle the error or display an error message
+            }
+        }
+    };
+    useEffect(() => {
+        getShipmentDetail();
+    },[order])
+    // end get shipment data
+
+    // tracking history
+      // Function to open the modal and set the tracking data
+    const openModalTrackingHistory = () => {
+        axios
+        .get(`${getUrl}/shipping/tracking?tracking_number=${shippmentData.order[0].courier_tracking_number}&courier_code=${shippmentData.order[0].courier_code}`, {
+            headers: {
+                "x-access-token": "Bearer " + token,
+            },
+        })
+        .then((response) => {
+          const fetchedTrackingData = response.data;
+          setTrackingData(fetchedTrackingData);
+          setShowModalTrackingHistory(true);
+        })
+        .catch((error) => {
+          console.error('Error fetching tracking data:', error);
+          // Handle the error or display an error message
+          alert('NO DATA FOUND')
+        });
+    };
+
+    // Function to close the modal
+    const closeModalTrackingHistory = () => {
+        setShowModalTrackingHistory(false);
+    };
+
+    // END Tracking HIstory
     
     useEffect(() => {
         if (order_id==null || order_id == undefined ) {
@@ -315,7 +371,7 @@ const OrderDetail = (props) => {
                             </tr>
                             <tr>
                                 <td style={{color:'gray'}}>Shipping : </td>
-                                <td className="" style={{padding:10, textTransform:"uppercase"}}>{order.status_order}</td>
+                                <td className="" style={{padding:10, textTransform:"uppercase"}}>{(shippmentData.order && shippmentData.order[0].shipping_status) ? shippmentData.order[0].shipping_status : 'Pending'}</td>
                             </tr>
                             <tr>
                                 <td style={{color:'gray'}}>Address : </td>
@@ -338,7 +394,7 @@ const OrderDetail = (props) => {
                             </Col>
                             <Col className="mb-1">
                             <div className="mb-1"><strong>Payment Status:</strong> {order.transaction_status ? PaymentStatusLabel(order.transaction_status) : 'Waiting for Payment' }</div>
-                            <div className="mb-1"><strong>Amount:</strong> <span className="text-danger font-weight-bold">{order.total_amount ? PaymentStatusLabel(order.total_amount) : 'Dummy Price' }</span></div>
+                            <div className="mb-1"><strong>Amount:</strong> <span className="text-danger font-weight-bold">{order.total ? 'Rp '+order.total.toLocaleString('id-ID') : 'no data' }</span></div>
                             </Col>
                         </Row>
                     </div>
@@ -351,17 +407,35 @@ const OrderDetail = (props) => {
                 <Card.Body>
                     <h6 style={{ marginBottom: '10px' }}><strong>Shipment Details</strong></h6>
                     <hr />
+                    {shippmentData.order && (
                     <Row>
                         <Col>
-                            <div className="mb-1"><strong>Carrier:</strong> {orderDummy.shipment.carrier}</div>
-                            <div className="mb-1"><strong>Tracking Number:</strong> {orderDummy.shipment.trackingNumber}</div>
-                            <div className="mb-1"><strong>Status:</strong> {orderDummy.shipment.status}</div>
+                            <div className="mb-1"><strong>Carrier:</strong> {shippmentData.order[0].courier_code}</div>
+                            <div className="mb-1"><strong>Tracking Number:</strong> {(shippmentData.order[0].courier_tracking_number) ? shippmentData.order[0].courier_tracking_number : '-'}</div>
+                            <div className="mb-1"><strong>Status:</strong> {(shippmentData.order[0].shipping_status) ? shippmentData.order[0].shipping_status : 'Pending'}</div>
                         </Col>
                         <Col>
-                            <div className="mb-1"><strong>To :</strong> {orderDummy.shipment.receiver}</div>
-                            <div className="mb-1"><strong>To Address:</strong> {orderDummy.shipment.address}</div>
+                            <div className="mb-1"><strong>To :</strong> {shippmentData.customer_address[0].fullname}</div>
+                            <div className="mb-1"><strong>To Address:</strong> 
+                                <p  style={{marginBottom:'0'}}>
+                                    {shippmentData.customer_address[0].address}
+                                </p>
+                                <p style={{marginBottom:'0'}}>
+                                    {shippmentData.customer_address[0].city}
+                                </p>
+                                <p  style={{marginBottom:'0'}}>
+                                    {shippmentData.customer_address[0].region}
+                                </p>
+                                <p>
+                                    {shippmentData.customer_address[0].zipcode}
+                                </p>
+                            </div>
+                            <div>
+                            <Button onClick={openModalTrackingHistory}>View Tracking Information</Button>
+                            </div>
                         </Col>
                     </Row>
+                    )}
                 </Card.Body>
             </Card>
                 <div className="row mt-3" style={{paddingBottom: "100px"}}>
@@ -450,6 +524,14 @@ const OrderDetail = (props) => {
                     )}
                 </div>
                 </div>
+
+
+            <ShipmentHistory
+            show={showModalTrackingHistory}
+            onClose={closeModalTrackingHistory}
+            trackingData={trackingData}
+            />    
+        
             </LoadingOverlay>
         
     )

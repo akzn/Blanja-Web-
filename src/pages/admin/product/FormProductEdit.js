@@ -292,6 +292,14 @@ const FormProductEdit = (props) => {
 
   return (
       <Layout>
+         <input
+            multiple
+            type="file"
+            onChange={(e) => setFilePath(e.target.files)}
+            ref={inputRef}
+            name="image"
+            className={styles.hiddeninput}
+          />
           <Form>
             <Jumbotron className="container-content">
               <h3>Inventory</h3>

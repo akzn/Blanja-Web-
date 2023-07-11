@@ -65,6 +65,7 @@ const FormAddProduct = () => {
 
   const [filePath, setFilePath] = useState([]);
   const [prodName, setProdName] = useState("");
+  const [prodWeight, setProdWeight] = useState("");
   const [categories, setCategories] = useState([]);
   const [size, setSize] = useState([]);
   const [color, setColor] = useState([]);
@@ -168,7 +169,7 @@ const FormAddProduct = () => {
   };
 
   const inputRef = React.useRef();
-  const handleFile = (e) => {
+    const handleFile = (e) => {
     e.preventDefault();
     inputRef.current.click();
   };
@@ -178,6 +179,7 @@ const FormAddProduct = () => {
     const data = new FormData();
     data.append("product_name", prodName);
     data.append("category_id", ctg);
+    data.append("weight_gram", prodWeight);
     formatDataSizeToSend(size).map((element) => {
       data.append("sizes[]", JSON.stringify(element));
     });
@@ -228,6 +230,14 @@ const FormAddProduct = () => {
         <h3>Add Product</h3>
         <p>Make New Product</p>
         <hr />
+        <input
+            multiple
+            type="file"
+            onChange={(e) => setFilePath(e.target.files)}
+            ref={inputRef}
+            name="image"
+            className={styles.hiddeninput}
+          />
           <Form>
             <Jumbotron className="container-content">
               <h3>Inventory</h3>
@@ -275,6 +285,18 @@ const FormAddProduct = () => {
                         setProdQty(e.target.value);
                       }}
                     />
+                  
+                  <Form.Group controlId="product_stock">
+                    <Form.Label className="font-p-title">Weight </Form.Label>
+                    <Form.Control
+                      placeholder="weight in grams"
+                      value={prodWeight}
+                      onChange={(e) => {
+                        setProdWeight(e.target.value);
+                      }}
+                    />
+                    </Form.Group>
+
                   </Form.Group>
                   <div className="form-group">
                     <label>Category </label>

@@ -30,9 +30,14 @@ const Checkout = (props) => {
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [showCourierSelection, setShowCourierSelection] = useState(false);
+  const [courierData, setCourierData] = useState([]);
   const [address, setAddress] = useState([]);
+  const [addressStore, setAddressStore] = useState([]);
+  const [shipperAreaID, setShipperAreaID] = useState([]);
+  const [destinationAreaID, setDestinationAreaID] = useState([]);
   const [isRender, setIsRender] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedValue, setSelectedValue] = useState([]);
 
   const dispatch = useDispatch();
   const checkout = useSelector((state) => state.product.checkout);
@@ -41,12 +46,13 @@ const Checkout = (props) => {
     (state) => state.product.checkout.transaction_code
   );
   const item = useSelector((state) => state.product.checkout.item);
+  const [updatedItems, setUpdatedItems] = useState([]);
 
   const stateCarts = useSelector((state) => state.product.carts);
   const token = useSelector((state) => state.auth.data.token);
   // const { getAddress } = props.location;
   // const { changeAddres } = props.location;
-  console.log("CHECKOUT", checkout);
+  // console.log("CHECKOUT", checkout);
 
   const {
     Id_address,
@@ -58,22 +64,11 @@ const Checkout = (props) => {
     Country,
   } = props.location;
 
-  console.log(
-    "tes ilmu",
-    Id_address,
-    Fullname,
-    Address,
-    City,
-    Region,
-    Zip_code,
-    Country
-  );
-
   const history = useHistory();
 
   const transaction = async () => {
     // reject transaction if addres is null 
-    if (Address === null) {  
+    if (address === null) {  
       toast.error("You need to pick address first ", {
         position: "top-right",
         autoClose: 5000,
@@ -84,9 +79,22 @@ const Checkout = (props) => {
         transition: Bounce,
       }); 
     } else {
+      // console.log(checkout);
+      // console.log(address);
+      let body = {
+        transaction_code: checkout.transaction_code,
+        seller_id: checkout.seller_id,
+        id_address: address.id_address,
+        id_store_address:addressStore.id_address,
+        item: updatedItems,
+        courier_code:courierData.courier,
+        courier_type:courierData.type,
+        courier_price:courierData.price,
+      }
+
       setIsLoading(true)
       await axios
-        .post(`${API}/orders`, checkout, {
+        .post(`${API}/orders`, body, {
           headers: {
             "x-access-token": "Bearer " + token,
           },
@@ -110,21 +118,11 @@ const Checkout = (props) => {
         })
         .finally(() => {
           setIsLoading(false)
-        });
-      
-      // toast.success("Success! your order will be processed. ", {
-      //   position: "top-right",
-      //   autoClose: 5000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   transition: Bounce,
-      // });  
+      });
     }
   };
 
-  console.log("tea dd", address);
+  // console.log("tea dd", address);
   
 
   const getAddressUser = async () => {
@@ -158,15 +156,136 @@ const Checkout = (props) => {
     });
   };
 
+  const getAddressStore = async () => {
+    await axios
+    .get(`${API}/address/store`, {
+      headers: {
+        "x-access-token": "Bearer " + token,
+      },
+    })
+    .then((res) => {
+      console.log('get address store:',res)
+      const addressNull = res.data.data;
+      const addressData = res.data.data[0];
+
+      if (addressStore === null) {
+        setAddressStore(addressNull);
+      } else {
+        setAddressStore(addressData);
+        const id_address = res.data.data[0].id_address;
+        const sendData = {
+          transaction_code: transaction_code,
+          seller_id: seller_id,
+          id_address: id_address,
+          item: item,
+          id_store_address:id_address
+        };
+        dispatch(addToCheckout({ sendData }));
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  };
+
   // if (showAddAddress === true) {
   //   getAddressUser();
   // }
 
+  async function fetchProduct(it) {
+    try {
+      const response = await axios.get(`${API}/products/${it.product_id}`, {
+        headers: {
+          "x-access-token": "Bearer " + token,
+        },
+      });
+      
+      console.log(response.data.data)
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
+    }
+  }
+
+  const handleModalClose = (selectedValue) => {
+    setSelectedValue(selectedValue);
+  };
+
+  const handleToPayment = async (courierData) =>{
+    if (!courierData.price) {
+      alert('Please select courier first!') 
+    } else {
+      setShowPayment(true)
+    }
+      
+  } 
+
+  // update items weight grams data
   useEffect(() => {
-    getAddressUser();
+    if (!checkout || !transaction_code || !seller_id) {
+      history.push({
+              pathname: '/mybag/'
+            });
+    } else {
+      getAddressUser();
+      getAddressStore();
+      if (item){
+        Promise.all(item.map(async (it) => {
+          try {
+            const productData = await fetchProduct(it);
+            // Update the item with the fetched product data
+            const updatedItem = { ...it, weight: productData.weight_gram, value:it.sub_total_item,quantity:it.product_qty };
+            return updatedItem;
+          } catch (error) {
+            console.error('Error fetching product data:', error);
+          }
+        })).then((updatedItems) => {
+          // Perform further operations with the updated items array
+          console.log(updatedItems);
+          setUpdatedItems(updatedItems);
+          // Pass the updated items to the component or update the state accordingly
+        });
+      }
+      
+    }
   }, []);
 
-  // console.log("address", address);
+
+
+  useEffect(() => {
+    setDestinationAreaID(address.biteship_address_id)
+    setShipperAreaID(addressStore.biteship_address_id)
+  }, [address, addressStore]);
+
+  // handle update courier data
+  useEffect(() => {
+    if (selectedValue) {
+      try {
+        const parsedObject = JSON.parse(selectedValue);
+        console.log(parsedObject);
+        console.log(parsedObject.courier);
+        console.log(parsedObject.type);
+        console.log(parsedObject.price);
+
+        setCourierData(parsedObject)
+
+        const sendData = {
+          transaction_code: transaction_code,
+          seller_id: seller_id,
+          id_address: address.id_address,
+          id_store_address:addressStore.id_address,
+          courier:parsedObject,
+          item: updatedItems,
+        };
+        dispatch(addToCheckout({ sendData }));
+
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
+    }
+    console.log('checkout',checkout)
+  },[selectedValue,updatedItems])
 
   return (
     <LoadingOverlay
@@ -241,6 +360,20 @@ const Checkout = (props) => {
                     Pick your favourite shipment courier
                   </Card.Text>
                   <Button variant="primary" onClick={() => setShowCourierSelection(true)}>Choose</Button>
+                  {selectedValue && (
+                    <div className="card mt-3">
+                      <div className="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                          <h5 className="card-title">Selected Courier</h5>
+                          <p className="card-text">{courierData.courier_name} {courierData.courier_service_name}</p>
+                        </div>
+                        <div>
+                          <h5 className="card-title">Price</h5>
+                          <p className="card-text">{courierData.price}</p> {/* Replace with your actual price */}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </Card.Body>
               </Card>
 
@@ -290,7 +423,9 @@ const Checkout = (props) => {
                 </div>
                 <div className="ttl-price">
                   <p className="text-price text-muted" style={{fontSize:"20px"}}>Shipping Fee</p>
-                  <p className="pay text-danger">Rp 5.000</p>
+                  {(courierData && courierData.price) && (
+                    <p className="pay text-danger">Rp{courierData.price.toLocaleString('id-ID')}</p>
+                  )}
                 </div>
                 <div
                   style={{
@@ -305,7 +440,7 @@ const Checkout = (props) => {
                   <Button
                     variant="primary"
                     className="btn-buy"
-                    onClick={() => setShowPayment(true)}
+                    onClick={() => handleToPayment(courierData)}
                     style={{width:"100%"}}
                   >
                     {/* <p className="text-buy">Checkout</p> */}
@@ -341,6 +476,7 @@ const Checkout = (props) => {
         onHide={() => setShowPayment(false)}
         showAddAddress={() => setShowAddAddress(true)}
         cart={stateCarts.filter((item) => item.selected === true)}
+        courierData={courierData}
         onSubmit={() => transaction()}
         // handleSelectPayment={(evt) => handleSelectPayment(evt)}
       />
@@ -359,6 +495,11 @@ const Checkout = (props) => {
           setShowCourierSelection(false);
           // getAddressUser(address);
         }}
+        onClose={(response) => {
+          handleModalClose(response)
+          setShowCourierSelection(false);
+        }}
+        params={{shipper_area_id:shipperAreaID,destination_area_id:destinationAreaID,items:updatedItems}}
       />
     </div>
     </LoadingOverlay>

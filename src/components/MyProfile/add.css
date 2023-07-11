@@ -1,7 +1,9 @@
 .container-selling {
-  margin-left: 30%;
-  width: 70%;
-  background-color: #9b9b9b;
+  /* margin-left: 30%;
+  width: 70%; */
+  margin-left: 20% !important;
+  width: 80% !important;
+  background-color: #fff !important;
 }
 .container-content,
 .container-gap {
@@ -26,4 +28,9 @@ h3 {
 .font-p-title {
   font-size: 14px;
   color: #9b9b9b;
+}
+.container-content {
+  margin-top: unset !important;
+  margin-left: unset !important;
+  width: unset !important;
 }
