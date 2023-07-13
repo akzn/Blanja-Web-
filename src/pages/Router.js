@@ -46,7 +46,7 @@ export default function Router() {
   return (
     <BrowserRouter>
      <Route path="/" exact component={Home} />
-      <RoutePrivate path="/products/:id" component={Product} />
+      <Route path="/products/:id" exact component={Product} />
       <PrivateRouter path="/mybag" component={Mybag} />
       <PrivateRouter path="/checkout" component={Checkout} />
       <PrivateRouter path="/profile" component={MyProfile} />

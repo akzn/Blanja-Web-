@@ -83,6 +83,7 @@ const FormProductEdit = (props) => {
   const photo = JSON.parse(product_photo);
   const [filePath, setFilePath] = useState([]);
   const [prodName, setProdName] = useState(product_name);
+  const [prodWeight, setProdWeight] = useState("");
   const [categories, setCategories] = useState([]);
   const [size, setSize] = useState([]);
   const [color, setColor] = useState([]);
@@ -213,6 +214,27 @@ const FormProductEdit = (props) => {
       });
   };
 
+  async function fetchProduct(id) {
+    try {
+      const response = await axios.get(`${API}/products/${id}`, {
+        headers: {
+          "x-access-token": "Bearer " + token,
+        },
+      });
+      
+      // console.log('product',response.data.data.weight_gram)
+      setProdWeight(response.data.data.weight_gram)
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
+    }
+  }
+
+  useEffect(async()=>{
+    let product = await fetchProduct(id);
+  },[id])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -243,6 +265,7 @@ const FormProductEdit = (props) => {
     
     const data = new FormData();
     data.append("product_name", prodName);
+    data.append("weight_gram", prodWeight);
     data.append("category_id", ctg);
     formatDataSizeToSend(size).map((element) => {
       data.append("sizes[]", JSON.stringify(element));
@@ -348,6 +371,18 @@ const FormProductEdit = (props) => {
                       }}
                     />
                   </Form.Group>
+
+                  <Form.Group controlId="product_stock">
+                    <Form.Label className="font-p-title">Weight {"(grams)"}</Form.Label>
+                    <Form.Control
+                      placeholder="weight in grams"
+                      value={prodWeight}
+                      onChange={(e) => {
+                        setProdWeight(e.target.value);
+                      }}
+                    />
+                    </Form.Group>
+
                   <div className="form-group">
                     <label>Category </label>
                     <br></br>

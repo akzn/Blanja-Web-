@@ -15,6 +15,15 @@ const Register = ({ changeToLogin }) => {
   const history = useHistory();
   const [role, setRole] = useState(1);
 
+  const hideStyle = {
+    display: 'none',
+    important: 'true' // Custom property to simulate !important behavior
+  };
+
+  hideStyle.cssText = Object.entries(hideStyle)
+    .map(([property, value]) => `${property}: ${value} !important;`)
+    .join(' ');
+
   let reviewSchema = "";
   if (role === 2) {
     reviewSchema = yup.object({
@@ -64,7 +73,7 @@ const Register = ({ changeToLogin }) => {
           <BrandMedium/>
         </div>
         <h4 className="tag-h4">Please sign up with your account</h4>
-        <div className="col-md-12 d-flex justify-content-center align-items-center mt-3">
+        <div className="col-md-12 d-flex justify-content-center align-items-center mt-3" style={hideStyle}>
           <button
             type="button"
             className={styleBtnCustomer}
