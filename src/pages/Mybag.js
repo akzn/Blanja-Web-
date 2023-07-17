@@ -24,8 +24,12 @@ const Mybag2 = () => {
 
   const dispatch = useDispatch();
   const stateCarts = useSelector((state) => state.product.carts);
-  console.log("STATECART", stateCarts);
   const token = useSelector((state) => state.auth.data.token);
+  const userdata = useSelector((state) => state.auth.data);
+  // Filter the carts based on the logged-in user's user_id
+  const userCarts = stateCarts.filter((item) => item.user_id === userdata.user_id);
+  console.log("STATECART", stateCarts);
+  console.log("USERCART", userCarts);
 
   useEffect(() => {
     getAddressUser();
@@ -33,23 +37,23 @@ const Mybag2 = () => {
 
   const handleSelectAll = (evt) => {
     if (evt.target.checked) {
-      stateCarts.map((item) => (item.selected = true));
+      userCarts.map((item) => (item.selected = true));
       setCart([...cart]);
     } else {
-      stateCarts.map((item) => (item.selected = false));
+      userCarts.map((item) => (item.selected = false));
       setCart([...cart]);
     }
   };
 
   const handleSelectItem = (evt) => {
     if (evt.target.checked) {
-      let penampung = stateCarts.filter(
+      let penampung = userCarts.filter(
         (item) => item.id === Number(evt.target.id)
       );
       penampung[0].selected = true;
       setCart([...cart]);
     } else {
-      let penampung = stateCarts.filter(
+      let penampung = userCarts.filter(
         (item) => item.id === Number(evt.target.id)
       );
       penampung[0].selected = false;
@@ -76,7 +80,7 @@ const Mybag2 = () => {
 
   const kirim = () => {
     let invoice = Math.floor(Math.random() * 100001) + 1;
-    let productId = stateCarts
+    let productId = userCarts
       .filter((item) => item.selected === true)
       .map((item) => {
         return {
@@ -88,7 +92,7 @@ const Mybag2 = () => {
       });
     const sendData = {
       transaction_code: invoice,
-      seller_id: stateCarts[0].seller_id,
+      seller_id: userCarts[0].seller_id,
       id_address: "",
       item: productId,
     };
@@ -97,11 +101,11 @@ const Mybag2 = () => {
 
   const handleDeleteCart = (e) => {
     e.preventDefault();
-    stateCarts
+    userCarts
       .filter((item) => item.selected === true)
       .map((item) => {
-        console.log("DELETE CART", deleteCart(item.id));
-        return dispatch(deleteCart(item.id));
+        console.log("DELETE CART", deleteCart(item.id, item.user_id)); // Pass user_id to deleteCart action
+        return dispatch(deleteCart(item.id, userdata.user_id)); // Pass user_id to deleteCart action
       });
     setModalShow(false);
   };
@@ -111,7 +115,7 @@ const Mybag2 = () => {
       <Navbar />
       <div className="container">
         <h1 style={{ fontSize: "34px", fontWeight: "700" }}>My Bag</h1>
-        {stateCarts.length ? (
+        {userCarts.length ? (
           <div className="row">
             <div className="col-12 col-md-8 left">
               <div className="col chart justify-content-between" style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)" }}>
@@ -125,7 +129,7 @@ const Mybag2 = () => {
                   </div>
                   <p className="ml-3 selectitem">
                     {`Select all item (${
-                      stateCarts.filter((item) => item.selected === true).length
+                      userCarts.filter((item) => item.selected === true).length
                     } items selected)`}
                   </p>
                 </div>
@@ -140,7 +144,7 @@ const Mybag2 = () => {
                   Delete
                 </p>
               </div>
-              {stateCarts.map((item) => {
+              {userCarts.map((item) => {
                 return (
                   <div
                     className="row prodct"
@@ -248,7 +252,7 @@ const Mybag2 = () => {
                   <p className="text-price text-muted">Total price</p>
                   <p className="pay text-danger" style={{fontSize:"22px"}}>
                     Rp.
-                    {stateCarts
+                    {userCarts
                       .filter((item) => item.selected === true)
                       .reduce((total, item) => {
                         return total + item.price * item.qty;
@@ -256,7 +260,7 @@ const Mybag2 = () => {
                       .toLocaleString("id-ID")}
                   </p>
                 </div>
-                {stateCarts.filter((item) => item.selected === true).length ? (
+                {userCarts.filter((item) => item.selected === true).length ? (
                   <Link
                     className="text-decoration-none"
                     to={{

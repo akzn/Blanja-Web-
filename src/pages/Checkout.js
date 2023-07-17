@@ -50,6 +50,11 @@ const Checkout = (props) => {
 
   const stateCarts = useSelector((state) => state.product.carts);
   const token = useSelector((state) => state.auth.data.token);
+  const userdata = useSelector((state) => state.auth.data);
+  // Filter the carts based on the logged-in user's user_id
+  const userCarts = stateCarts.filter((item) => item.user_id === userdata.user_id);
+  console.log("STATECART", stateCarts);
+  console.log("USERCART", userCarts);
   // const { getAddress } = props.location;
   // const { changeAddres } = props.location;
   // console.log("CHECKOUT", checkout);
@@ -254,8 +259,12 @@ const Checkout = (props) => {
 
 
   useEffect(() => {
-    setDestinationAreaID(address.biteship_address_id)
-    setShipperAreaID(addressStore.biteship_address_id)
+    if (address && address.biteship_address_id) {
+      setDestinationAreaID(address.biteship_address_id);
+    }
+    if (addressStore && addressStore.biteship_address_id) {
+      setShipperAreaID(addressStore.biteship_address_id);
+    }
   }, [address, addressStore]);
 
   // handle update courier data
@@ -301,7 +310,7 @@ const Checkout = (props) => {
         >
           Checkout
         </h1>
-        {stateCarts.filter((item) => item.selected === true).length ? (
+        {userCarts.filter((item) => item.selected === true).length ? (
           <div className="row">
             <div className="col-12 col-lg-8">
               <div className="col address" style={{ border:"1px solid rgba(0,0,0,.125)",boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",marginTop:"unset" }}>
@@ -378,7 +387,7 @@ const Checkout = (props) => {
               </Card>
 
               <h4 style={{marginTop:'20px',marginBottom:'unset'}}>Items :</h4>
-              {stateCarts
+              {userCarts
                 .filter((item) => item.selected === true)
                 .map((item) => {
                   return (
@@ -414,7 +423,7 @@ const Checkout = (props) => {
                 <h5 style={{marginBottom:"30px"}}>Shopping summary</h5>
                 <div className="ttl-price">
                   <p className="text-price text-muted" style={{fontSize:"20px"}}>Total price</p>
-                  <p className="pay text-danger">{`Rp${stateCarts
+                  <p className="pay text-danger">{`Rp${userCarts
                     .filter((item) => item.selected === true)
                     .reduce((total, item) => {
                       return total + item.price * item.qty;
@@ -475,7 +484,7 @@ const Checkout = (props) => {
         show={showPayment}
         onHide={() => setShowPayment(false)}
         showAddAddress={() => setShowAddAddress(true)}
-        cart={stateCarts.filter((item) => item.selected === true)}
+        cart={userCarts.filter((item) => item.selected === true)}
         courierData={courierData}
         onSubmit={() => transaction()}
         // handleSelectPayment={(evt) => handleSelectPayment(evt)}

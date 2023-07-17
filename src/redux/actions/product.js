@@ -14,11 +14,12 @@ export const addToCheckout = (data) => {
   };
 };
 
-export const deleteCart = (id) => {
+export const deleteCart = (id,user_id) => {
   return {
     type: actions.DELETE_FROM_CART,
     payload: {
       id: id,
+      user_id: user_id,
     },
   };
 };

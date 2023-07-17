@@ -26,7 +26,7 @@ const cartReducer = (state = initialState, { type, payload }) => {
     case actions.DELETE_FROM_CART:
       return {
         ...state,
-        carts: state.carts.filter((item) => item.id !== payload.id),
+        carts: state.carts.filter((item) => item.id !== payload.id || item.user_id !== payload.user_id), // patch for cart bug all user same cart
       };
     case actions.ADD_TO_CHECKOUT:
       return {

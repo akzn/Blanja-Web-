@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import axios from "axios";
 import { Link, useHistory } from "react-router-dom";
 import Navbar from "../Navbar";
@@ -39,6 +39,7 @@ const ProductName = (props) => {
   const history = useHistory();
 
   const { carts: stateCarts } = useSelector((state) => state.product);
+  const userdata = useSelector((state) => state.auth.data);
   const dispatch = useDispatch();
 
   const kirim = () => {
@@ -51,6 +52,7 @@ const ProductName = (props) => {
       qty: jumlah,
       seller_id: seller_id,
       selected: true,
+      user_id:userdata.user_id
     };
     dispatch(addToCart(sendData));
     history.push("/mybag");
@@ -61,6 +63,11 @@ const ProductName = (props) => {
   });
 
   // console.log("INDEX", size[sizes]);
+
+  
+  useEffect(() => {
+    console.log('user_id',userdata.user_id)
+  }, []);
 
   return (
     <div>
@@ -224,6 +231,7 @@ const ProductName = (props) => {
                           qty: jumlah,
                           seller_id: seller_id,
                           selected: false,
+                          user_id:userdata.user_id
                         })
                       );
                     }}
