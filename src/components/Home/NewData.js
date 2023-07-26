@@ -42,6 +42,9 @@ const NewData = () => {
           product_desc,
           rating,
         }) => {
+          
+          // Check if the product is sold out (quantity less than 1)
+          const isSoldOut = product_qty < 1;
           return (
             <Card
               className="card-style"
@@ -63,6 +66,8 @@ const NewData = () => {
               </Link>
 
               <div className="card-body" style={{ bottom: 0 }}>
+                {/* Display "Sold Out" text if the product is sold out */}
+                {isSoldOut && <p className="sold-out-text bg-danger text-light text-center font-weight-bold mb-0">Sold Out</p>}
                 <h5 className="card-title">{product_name}</h5>
                 <p className="card-text">Rp. {product_price}</p>
                 <p className="card-text2">{category_name}</p>

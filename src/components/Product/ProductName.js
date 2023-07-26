@@ -12,6 +12,7 @@ import { API } from "../../utility/Auth";
 const ProductName = (props) => {
   const {
     name,
+    qty_in_stock,
     price,
     brand,
     condition,
@@ -41,21 +42,31 @@ const ProductName = (props) => {
   const { carts: stateCarts } = useSelector((state) => state.product);
   const userdata = useSelector((state) => state.auth.data);
   const dispatch = useDispatch();
+  const isSoldOut = qty_in_stock < 1;
+  console.log('product prop',props)
+  console.log('isSoldOut',isSoldOut)
 
   const kirim = () => {
-    const sendData = {
-      brand: brand,
-      id: id,
-      photo: photo[0],
-      name: name,
-      price: Number(price),
-      qty: jumlah,
-      seller_id: seller_id,
-      selected: true,
-      user_id:userdata.user_id
-    };
-    dispatch(addToCart(sendData));
-    history.push("/mybag");
+    if (userdata && userdata.user_id) {
+      if (!isSoldOut) {
+        const sendData = {
+          brand: brand,
+          id: id,
+          photo: photo[0],
+          name: name,
+          price: Number(price),
+          qty_in_stock:qty_in_stock,
+          qty: jumlah,
+          seller_id: seller_id,
+          selected: true,
+          user_id:userdata.user_id
+        };
+        dispatch(addToCart(sendData));
+        history.push("/mybag");
+      }
+    } else {
+      history.push("/login");
+    }
   };
 
   const index = stateCarts.findIndex((item) => {
@@ -63,6 +74,53 @@ const ProductName = (props) => {
   });
 
   // console.log("INDEX", size[sizes]);
+
+  const handleAddToCart = () => {
+    if (userdata && userdata.user_id) {
+      if (!isSoldOut) {
+        dispatch(
+          addToCart({
+            brand: brand,
+            id: id,
+            photo: photo[0],
+            name: name,
+            price: Number(price),
+            qty_in_stock:qty_in_stock,
+            qty: jumlah,
+            seller_id: seller_id,
+            selected: false,
+            user_id: userdata.user_id,
+          })
+        );
+      }
+    } else {
+      history.push("/login");
+    }
+  };
+
+  const handleMinusClick = () => {
+    if (qty_in_stock > 0) {
+      if (jumlah <= 1) {
+        return;
+      } else {
+        setJumlah(jumlah - qty);
+      }
+    }
+  };
+
+  const handlePlusClick = () => {
+    if (qty_in_stock > 0) {
+      // setJumlah((prevJumlah) => Math.min(prevJumlah + qty_in_stock, qty_in_stock));
+      if (qty_in_stock > 0) {
+        if ((jumlah + qty) > qty_in_stock) {
+          setJumlah(qty_in_stock);
+          alert('Limit Stock Reached')
+        } else {
+          setJumlah(jumlah + qty);
+        }
+      }
+    }
+  };
 
   
   useEffect(() => {
@@ -103,6 +161,7 @@ const ProductName = (props) => {
             </div>
           </div>
           <div className="col-12 col-md-7 col-l-7">
+            {isSoldOut && <p className="sold-out-text bg-danger text-light text-center font-weight-bold mb-0">Sold Out</p>}
             <h3 className="name">{name}</h3>
             <p className="brand">{brand}</p>
             <Rating product_rating={rating} />
@@ -161,22 +220,14 @@ const ProductName = (props) => {
                   backgroundColor: jumlah === 1 ? "#d4d4d4" : "white",
                   borderColor: jumlah === 1 ? "white" : "gray",
                 }}
-                onClick={() => {
-                  if (jumlah === 1) {
-                    return;
-                  } else {
-                    setJumlah(jumlah - qty);
-                  }
-                }}
+                onClick={handleMinusClick}
               >
                 <p style={{ color: jumlah === 1 ? "white" : "black" }}>-</p>
               </button>
               <p className="number mt-2">{jumlah}</p>
               <button
                 className="plus ml-2"
-                onClick={() => {
-                  setJumlah(jumlah + qty);
-                }}
+                onClick={handlePlusClick}
               >
                 <p>+</p>
               </button>
@@ -192,64 +243,64 @@ const ProductName = (props) => {
                 <button className="chat rounded-pill">Chat</button>
                 </Link>
               </div>
-              <div className="col-12 col-sm-3 mt-2">
-                {index >= 0 ? (
-                  <button
-                    className="rounded-pill"
-                    style={{
-                      backgroundColor: "#222222",
-                      color: "white",
-                      fontSize: "10px",
-                      width: "100%",
-                      height: "48px",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
-                    }}
-                  >
-                    Item already in bag
-                  </button>
-                ) : (
-                  <button
-                    className="rounded-pill"
-                    style={{
-                      backgroundColor: "white",
-                      color: "Black",
-                      fontSize: "15px",
-                      width: "100%",
-                      height: "48px",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
-                    }}
-                    onClick={() => {
-                      dispatch(
-                        addToCart({
-                          brand: brand,
-                          id: id,
-                          photo: photo[0],
-                          name: name,
-                          price: Number(price),
-                          qty: jumlah,
-                          seller_id: seller_id,
-                          selected: false,
-                          user_id:userdata.user_id
-                        })
-                      );
-                    }}
-                  >
-                    Add bag
-                  </button>
-                )}
-              </div>
-              {/* <Link to={{
-                    pathname:"/checkout",
-                    state: this.state,
-                    }}> */}
-              <div className="col-12 col-sm-6  mt-2">
-                <button className="buy rounded-pill" onClick={kirim}>
-                  Buy Now
-                </button>
-              </div>
-              {/* </Link> */}
+              
+              {/* Btn keranjang  */}
+              { !isSoldOut ? (
+                <div className="row col-12 col-sm-9 mt-2">
+                  <div className="col-12 col-sm-6">
+                    {index >= 0 ? (
+                      <button
+                        className="rounded-pill"
+                        style={{
+                          backgroundColor: "#222222",
+                          color: "white",
+                          fontSize: "10px",
+                          width: "100%",
+                          height: "48px",
+                          paddingLeft: "5px",
+                          paddingRight: "5px",
+                        }}
+
+
+                      >
+                        Item already in bag
+                      </button>
+                    ) : (
+                      <button
+                        className="rounded-pill"
+                        style={{
+                          backgroundColor: "white",
+                          color: "Black",
+                          fontSize: "15px",
+                          width: "100%",
+                          height: "48px",
+                          paddingLeft: "5px",
+                          paddingRight: "5px",
+                        }}
+                        onClick={handleAddToCart}
+                        disabled={isSoldOut}
+                      >
+                        Add bag
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="col-12 col-sm-6 ">
+                    <button className="buy rounded-pill" onClick={kirim}>
+                      Buy Now
+                    </button>
+                  </div>
+             
+                </div>
+              ) : (
+                <div className="row col-12 col-sm-9 mt-2">
+                  <div className="col-12 col-sm-6 ">
+                    {/* <p className="sold-out-text bg-danger text-light text-center font-weight-bold mb-0">Sold Out</p> */}
+                  </div>
+                </div>
+              )}
+              
+              {/* end button add keranjang */}
             </div>
           </div>
         </div>

@@ -110,6 +110,15 @@ const Mybag2 = () => {
     setModalShow(false);
   };
 
+  const handleIncreaseClick = (item) => {
+    if (item.qty < item.qty_in_stock) {
+      // You can dispatch the increaseQuantity action here
+      dispatch(increaseQuantity(item.id));
+    } else {
+      alert('Limit Stock Reached')
+    }
+  };
+
   return (
     <div>
       <Navbar />
@@ -228,7 +237,8 @@ const Mybag2 = () => {
                             backgroundColor: "#FFFFFF",
                             border: "solid 1px",
                           }}
-                          onClick={() => dispatch(increaseQuantity(item.id))}
+                          // onClick={() => dispatch(increaseQuantity(item.id))}
+                          onClick={ ()=>handleIncreaseClick(item) }
                         >
                           +
                         </button>

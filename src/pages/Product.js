@@ -46,6 +46,7 @@ const Product = (props) => {
         brand={product.category_name}
         desc={product.product_desc}
         price={product.product_price}
+        qty_in_stock={product.product_qty}
         condition={product.conditions}
         size={sizes}
         color={product.colors}
