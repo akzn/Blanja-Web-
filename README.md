@@ -1,39 +1,34 @@
-# Blanja-Web
-
-## Note
-### env development : 
-- setelah backend (BlanjaAPI) terinstall (`npm install`) dan database sudah selesai diunggah/import, run `knex migrate:latest` pda cli backend untuk melakukan migrasi database ke scheme terbaru. 
-- pastikan credential midtrans client sudah diinputkan pada file .env. Jika belum punya akun midtrans, register ke midtrans dan copy server/client secret pada dashboard [SANDBOX](https://dashboard.sandbox.midtrans.com/) midtrans ke .env. Pastikan credential yang dicopy adalah credential sandbox
-- Gunakan [Sanbox testing](https://docs.midtrans.com/en/technical-reference/sandbox-test) untuk testing payment midtrans. JANGAN GUNAKAN AKUN/BANK ASLI untuk testing. 
+# E-commerce 
 
 ## About the project
+ Aplikasi ini adalah platform e-commerce yang menyediakan kemudahan bagi customer dan toko untuk transaksi jual beli barang. Dibangun dengan menggunakan framework React.js untuk tampilan depan, Express.js untuk bagian backend, dan MySQL sebagai database.
 
-Blanja-Web adalah sebuah web e-commerce dimana customer bisa membeli barang yang dicari dan seller bisa menjual barang. Blanja-Web ini dibuat untuk memudahkan seller dan customer dalam bertransaksi. Dibuat dengan framework javascript yaitu React Js untuk frontend, ExpressJs untuk backend, dan MYSQL untuk database.
+## Fitur
+1. katalog produk beserta kategorinya
+2. sistem order produk
+3. hitung ongkir dan tracking resi
+4. pembayaran menggunakan payment gateway
 
-## Build with Project
+## Main Dependencies
 * [ReactJS](https://reactjs.org/)
+* [Redux](https://redux.js.org/)
 * [MYSQL](https://www.mysql.com/)
 * [Bootstrap](https://getbootstrap.com/)
 * [Node js](https://nodejs.org/en/)
 * [React Bootstrap](https://react-bootstrap.github.io/)
 
+## Third party services
+* [Midtrans](midtrans.com)
+* [Biteship](biteship.com)
+
 ## How to install
 * Buka terminal atau command prompt
-* Clone Repository https://github.com/AkbarZul/Blanja-Web-
-* Buka folder dan tulis `yarn` atau `npm install` untuk install dependencies
-* tulis `yarn start` atau `npm start`
+* Clone Repository https://github.com/akzn/Blanja-Web-
+* Ketik `npm install` pada terminal di root directory pada repo untuk install dependencies
+* Ketik `npm start`
 
 ## Screenshots
-* Home
-![screenshot-localhost_3000-2021 02 19-15_40_54](https://user-images.githubusercontent.com/67698809/108480211-3fd74e80-72c9-11eb-8dcf-b2d09255d897.png)
-* Login
-![Screenshot from 2021-02-15 22-26-48](https://user-images.githubusercontent.com/67698809/108480588-bb390000-72c9-11eb-8cb7-eb39dcaef306.png)
-* Detail 
-![screenshot-localhost_3000-2021 02 19-15_42_08](https://user-images.githubusercontent.com/67698809/108480828-03f0b900-72ca-11eb-9f3c-0f3d93c01f6e.png)
-* MyBag
-![Screenshot from 2021-02-15 22-25-48](https://user-images.githubusercontent.com/67698809/108480672-d572de00-72c9-11eb-86c8-4ea3b8d1f596.png)
-* CheckOut
-![Screenshot from 2021-02-15 22-25-54](https://user-images.githubusercontent.com/67698809/108480782-f5a29d00-72c9-11eb-8f79-d8338beddc36.png)
+TBA
 
 ## Repository Backend
 * [ClickHere](https://github.com/akzn/BlanjaAPI)
