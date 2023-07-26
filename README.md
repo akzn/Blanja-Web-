@@ -10,12 +10,14 @@
 4. pembayaran menggunakan payment gateway
 
 ## Main Dependencies
+* [Node js](https://nodejs.org/en/)
 * [ReactJS](https://reactjs.org/)
 * [Redux](https://redux.js.org/)
-* [MYSQL](https://www.mysql.com/)
+* [react-router](https://reactrouter.com/)
 * [Bootstrap](https://getbootstrap.com/)
-* [Node js](https://nodejs.org/en/)
 * [React Bootstrap](https://react-bootstrap.github.io/)
+
+> dependencies lain bisa dilihat di package.json
 
 ## Third party services
 * [Midtrans](midtrans.com)
